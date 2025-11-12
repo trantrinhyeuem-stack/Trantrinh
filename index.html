@@ -4,26 +4,66 @@
   <meta charset="UTF-8">
   <title>Game Chiến Đấu</title>
   <style>
-    body { 
-      background: black; 
-      color: white; 
-      font-family: monospace; 
-      text-align: center; 
-      margin-top: 50px;
+    body {
+      background: url('bg.jpg') center/cover no-repeat;
+      color: white;
+      font-family: monospace;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .battlefield {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 50px;
+      margin-top: 40px;
+    }
+    .fighter {
+      text-align: center;
+    }
+    img {
+      width: 150px;
+      height: 150px;
+      image-rendering: pixelated;
     }
     button {
       padding: 10px 20px;
       margin: 10px;
       font-size: 18px;
       cursor: pointer;
+      border-radius: 8px;
+    }
+    #status {
+      margin-top: 20px;
+      font-size: 18px;
+      background: rgba(0,0,0,0.5);
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
   <h1>⚔️ Game Chiến Đấu</h1>
+
+  <div class="battlefield">
+    <div class="fighter">
+      <img id="player" src="player.png" alt="Người chơi">
+      <p>💪 Người chơi</p>
+    </div>
+
+    <div class="fighter">
+      <img id="enemy" src="enemy.png" alt="Quái vật">
+      <p>👹 Quái vật</p>
+    </div>
+  </div>
+
   <p id="status">Bắt đầu trận chiến!</p>
-  <button onclick="attack()">Tấn công</button>
-  <button onclick="heal()">Hồi máu</button>
+
+  <div>
+    <button onclick="attack()">⚔️ Tấn công</button>
+    <button onclick="heal()">💖 Hồi máu</button>
+  </div>
 
   <script>
     let playerHP = 100;
@@ -39,9 +79,10 @@
     function attack() {
       let dmg = Math.floor(Math.random() * 20) + 5;
       enemyHP -= dmg;
+      flash("enemy");
       if (enemyHP <= 0) {
         alert("🎉 Bạn đã thắng!");
-        enemyHP = 100; playerHP = 100;
+        reset();
       } else {
         enemyAttack();
       }
@@ -59,10 +100,23 @@
     function enemyAttack() {
       let dmg = Math.floor(Math.random() * 15) + 5;
       playerHP -= dmg;
+      flash("player");
       if (playerHP <= 0) {
         alert("💀 Bạn đã thua...");
-        playerHP = 100; enemyHP = 100;
+        reset();
       }
+    }
+
+    function flash(id) {
+      const el = document.getElementById(id);
+      el.style.filter = "brightness(200%)";
+      setTimeout(() => el.style.filter = "brightness(100%)", 200);
+    }
+
+    function reset() {
+      playerHP = 100;
+      enemyHP = 100;
+      updateStatus();
     }
 
     updateStatus();
